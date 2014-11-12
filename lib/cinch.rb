@@ -33,15 +33,6 @@ bot = Cinch::Bot.new do
       m.reply list.sample
     end
 
-    def spotify_user
-      RSpotify::User.new({'credentials'=> {"refresh_token"=>
-    "AQBZILjwrIGtgdn90NPBRm67d3tqb6P9tdRvjeRCh-EKhxSSurcg0jvQ1vbsBAn1eoD3J5I8luMwRdxon6yvLhNP6t_lHLtWkj2B_-sgO_pvZ35s8V9hgiuYwFTLEgbrgT0"}, 'id'=>"treehugrb"})
-    end
-
-    def britney
-      spotify_user.display_name
-    end
-
     def spotify_artists(artists)
       artist = RSpotify::Artist.search(artists).first
       if artist == nil
@@ -78,7 +69,6 @@ bot = Cinch::Bot.new do
 
   on :message, /^!(britney|master|owner)/ do |m|
     m.reply "britneywright made me"
-    m.reply "her spotify username is #{britney}"
   end
 
   on :message, /favorite song/ do |m|

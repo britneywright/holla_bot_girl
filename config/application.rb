@@ -8,7 +8,13 @@ Bundler.require(*Rails.groups)
 
 module HollaBotGirl
   class Application < Rails::Application
-    RSpotify::authenticate("7ecccba5d7e44320be84efa653207412", "e4d53c9300504febbb772ec3550a8f99")
+    config.before_configuration do
+      env_file = File.join(Rails.root, 'config', 'environment_variables.yml')
+      YAML.load(File.open(env_file)).each do |key, value|
+        ENV[key.to_s] = value
+      end if File.exists?(env_file)
+    end
+    RSpotify::authenticate(ENV['KEY1'], ENV['KEY2'])
   end
 end
 Thread.new do

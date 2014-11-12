@@ -7,7 +7,7 @@
 # Ignore bundler config.
 /.bundle
 
-/config/initalizers/omniauth.rb
+/config/environment_variables.rb
 
 # Ignore all logfiles and tempfiles.
 /log/*.log
