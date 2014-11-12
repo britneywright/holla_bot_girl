@@ -28,7 +28,20 @@ bot = Cinch::Bot.new do
     c.channels = ["#alskdj"]
   end
 
-  helpers do 
+  helpers do
+    def reply_random(m, list)
+      m.reply list.sample
+    end
+
+    def spotify_user
+      RSpotify::User.new({'credentials'=> {"refresh_token"=>
+    "AQBZILjwrIGtgdn90NPBRm67d3tqb6P9tdRvjeRCh-EKhxSSurcg0jvQ1vbsBAn1eoD3J5I8luMwRdxon6yvLhNP6t_lHLtWkj2B_-sgO_pvZ35s8V9hgiuYwFTLEgbrgT0"}, 'id'=>"treehugrb"})
+    end
+
+    def britney
+      spotify_user.display_name
+    end
+
     def spotify_artists(artists)
       artist = RSpotify::Artist.search(artists).first
       if artist == nil
@@ -46,6 +59,11 @@ bot = Cinch::Bot.new do
       the_playlist.add_tracks!(song, position: 0)
     end  
 
+
+    def remove_from_playlist(song)
+      the_playlist.remove_tracks!(song)
+    end  
+
     def find_song(title)
       RSpotify::Track.search(title, limit: 1)
     end      
@@ -58,8 +76,9 @@ bot = Cinch::Bot.new do
     m.reply "More help to come!"
   end
 
-  on :message, /^!britney/ do |m|
+  on :message, /^!(britney|master|owner)/ do |m|
     m.reply "britneywright made me"
+    m.reply "her spotify username is #{britney}"
   end
 
   on :message, /favorite song/ do |m|
@@ -101,29 +120,34 @@ bot = Cinch::Bot.new do
 
   on :message, /^!stalk (.+)/ do |m, nick|
     user = DB.instance.lookup_user(nick)
-    if user
-      m.reply "#{user.get(:nick)} is #{user.get(:twitter)} on Twitter and #{user.get(:github)} on Github."
+    if user.get(:nick) != nil && user.get(:twitter) != nil && user.get(:github) != nil
+      m.reply "You can find #{user.get(:nick)} at http://twitter.com/#{user.get(:twitter)} and http://github.com/#{user.get(:github)}"
     else
-      m.reply "You're stalking in the wrong room"
+      m.reply "You're stalking in the wrong place"
     end
   end
 
-  on :message, /^my twitter/ do |m| 
+  on :message, /!my twitter/ do |m| 
     user = DB.instance.lookup_user(m.user.nick)
     m.reply "Your twitter handle is #{user.get(:twitter)}"
   end
 
   on :message, /!song (.+)/ do |m, title|
-    m.reply "#{find_song(title).first.name}: #{find_song(title).first.artists.map(&:name)}"
+    m.reply "#{find_song(title).first.name}: #{find_song(title).first.artists.map(&:name)} #{find_song(title).first.uri}"
   end
 
   on :message, /^!playlist/ do |m| 
-    m.reply "#{the_playlist.name}: #{the_playlist.tracks.map(&:name)}"
+    m.reply "#{the_playlist.name} (#{the_playlist.uri}): #{the_playlist.tracks.map(&:name)}"
   end
 
-  on :message, /^add (.+) to the playlist/ do |m, title| 
+  on :message, /^!add (.+)/ do |m, title|
     add_to_playlist(find_song(title))
     m.reply "I added that song to the playlist"
-  end  
+  end
+
+  on :message, /^!remove (.+)/ do |m, title|
+    remove_from_playlist(find_song(title))
+    m.reply "I removed that song from the playlist"
+  end     
 end
 bot.start
