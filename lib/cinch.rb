@@ -25,7 +25,7 @@ bot = Cinch::Bot.new do
     c.server = "irc.freenode.net"
     c.user = "holla_bot_girl"
     c.nick = "holla_bot_girl"
-    c.channels = ["#alskdj"]
+    c.channels = ["##new2ruby"]
   end
 
   helpers do
@@ -64,11 +64,37 @@ bot = Cinch::Bot.new do
     m.reply "Type !cute or cranky for pretty pictures."
     m.reply "Tell us about yourself. Type !me nickname, twitter, github."
     m.reply "Learn about others. Type !stalk nickname."
-    m.reply "More help to come!"
+    m.reply "Type !playlist to view our ##new2ruby playlist."
+    m.reply "Type !song and a song name (and artist if you know it) to return a link to share with others."
+    m.reply "Type !add and a song name (and artist if you know it) to add a song to the playlist."
+    m.reply "Type !remove and a song name (and artist if you know it) to remove a song from the playlist."
+    m.reply "Type !artist and an artist or group name to return a link to their most popular track in US."
+  end
+
+  on :message, /^hello holla_bot_girl/ do |m, nick|
+    m.reply "Hello #{m.user.nick}"
+  end
+
+  on :message, /^bye holla_bot_girl/ do |m, nick|
+    m.reply "Goodbye #{m.user.nick}"
   end
 
   on :message, /^!(britney|master|owner)/ do |m|
     m.reply "britneywright made me"
+  end
+
+  on :message, /^!me (.+), (.+), (.+)/ do |m, nick, twitter, github|
+    DB.instance.new_user(nick, twitter, github)
+    m.reply "You're alive!"
+  end
+
+  on :message, /^!stalk (.+)/ do |m, nick|
+    user = DB.instance.lookup_user(nick)
+    if user.get(:nick) != nil && user.get(:twitter) != nil && user.get(:github) != nil
+      m.reply "You can find #{user.get(:nick)} at http://twitter.com/#{user.get(:twitter)} and http://github.com/#{user.get(:github)}"
+    else
+      m.reply "You're stalking in the wrong place"
+    end
   end
 
   on :message, /favorite song/ do |m|
@@ -93,33 +119,6 @@ bot = Cinch::Bot.new do
 
   on :message, /^!artist (.+)/ do |m, artists|
     m.reply spotify_artists(artists)
-  end
-
-  on :message, /^hello holla_bot_girl/ do |m, nick|
-    m.reply "Hello #{m.user.nick}"
-  end
-
-  on :message, /^bye holla_bot_girl/ do |m, nick|
-    m.reply "Goodbye #{m.user.nick}"
-  end
-
-  on :message, /^!me (.+), (.+), (.+)/ do |m, nick, twitter, github|
-    DB.instance.new_user(nick, twitter, github)
-    m.reply "You're alive!"
-  end
-
-  on :message, /^!stalk (.+)/ do |m, nick|
-    user = DB.instance.lookup_user(nick)
-    if user.get(:nick) != nil && user.get(:twitter) != nil && user.get(:github) != nil
-      m.reply "You can find #{user.get(:nick)} at http://twitter.com/#{user.get(:twitter)} and http://github.com/#{user.get(:github)}"
-    else
-      m.reply "You're stalking in the wrong place"
-    end
-  end
-
-  on :message, /!my twitter/ do |m| 
-    user = DB.instance.lookup_user(m.user.nick)
-    m.reply "Your twitter handle is #{user.get(:twitter)}"
   end
 
   on :message, /!song (.+)/ do |m, title|
