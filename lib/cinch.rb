@@ -70,6 +70,23 @@ bot = Cinch::Bot.new do
     m.user.send "Type !artist and an artist or group name to return a link to their most popular track in US."
   end
 
+  on :message, /^!improve/ do |m, title|
+    m.reply "Submit a pull request or write an issue to improve me. https://github.com/britneywright/holla_bot_girl"
+  end  
+
+  on :message, /^(hello|hi|hey) holla_bot_girl/ do |m, nick|
+    m.reply "Hello #{m.user.nick}"
+  end
+
+  on :message, /^(bye|goodbye) holla_bot_girl/ do |m, nick|
+    m.reply "Goodbye #{m.user.nick}"
+  end
+
+  on :message, /^!me (.+), (.+), (.+)/ do |m, nick, twitter, github|
+    DB.instance.new_user(nick, twitter, github)
+    m.reply "You're alive!"
+  end
+
   on :message, /^!(britney|master|owner)/ do |m|
     m.reply "britneywright made me"
   end
@@ -98,31 +115,13 @@ bot = Cinch::Bot.new do
     m.reply spotify_artists(artists)
   end
 
-  on :message, /^hello holla_bot_girl/ do |m, nick|
-    m.reply "Hello #{m.user.nick}"
-  end
-
-  on :message, /^bye holla_bot_girl/ do |m, nick|
-    m.reply "Goodbye #{m.user.nick}"
-  end
-
-  on :message, /^!me (.+), (.+), (.+)/ do |m, nick, twitter, github|
-    DB.instance.new_user(nick, twitter, github)
-    m.reply "You're alive!"
-  end
-
-  on :message, /^!stalk (.+)/ do |m, nick|
+  on :message, /^!about (.+)/ do |m, nick|
     user = DB.instance.lookup_user(nick)
     if user.get(:nick) != nil && user.get(:twitter) != nil && user.get(:github) != nil
       m.reply "You can find #{user.get(:nick)} at http://twitter.com/#{user.get(:twitter)} and http://github.com/#{user.get(:github)}"
     else
-      m.reply "You're stalking in the wrong place"
+      m.reply "You're looking in the wrong place"
     end
-  end
-
-  on :message, /!my twitter/ do |m| 
-    user = DB.instance.lookup_user(m.user.nick)
-    m.reply "Your twitter handle is #{user.get(:twitter)}"
   end
 
   on :message, /!song (.+)/ do |m, title|
