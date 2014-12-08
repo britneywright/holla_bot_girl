@@ -129,7 +129,7 @@ bot = Cinch::Bot.new do
   end
 
   on :message, /^!playlist/ do |m| 
-    m.reply "#{the_playlist.name} (#{the_playlist.uri}): #{the_playlist.tracks.map(&:name)}"
+    m.reply "#{the_playlist.name} (#{the_playlist.uri}): #{the_playlist.tracks.map(&:name).join(', ')}"
   end
 
   on :message, /^!add (.+)/ do |m, title|
