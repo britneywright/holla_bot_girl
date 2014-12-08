@@ -25,7 +25,7 @@ bot = Cinch::Bot.new do
     c.server = "irc.freenode.net"
     c.user = "holla_bot_girl"
     c.nick = "holla_bot_girl"
-    c.channels = ["#alskdj"]
+    c.channels = ["#theweekenders"]
   end
 
   helpers do
