@@ -4,7 +4,7 @@ class DB
   include Singleton
 
   def initialize
-    @db = Sequel.connect(:adapter=>'postgres', :host=>'localhost', :database=>'holla_bot_girl', :user=>'britneywright')
+    @db = Sequel.connect(ENV['DATABASE_URL'])
   end
 
   def users
