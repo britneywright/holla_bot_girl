@@ -61,10 +61,13 @@ bot = Cinch::Bot.new do
   end
   
   on :message, /^!help$/ do |m|
-    m.reply "Type !cute or cranky for pretty pictures."
-    m.reply "Tell us about yourself. Type !me nickname, twitter, github."
-    m.reply "Learn about others. Type !stalk nickname."
-    m.reply "More help to come!"
+    m.user.send "Type !cute or cranky for pretty pictures."
+    m.user.send "Tell us about yourself. Type !me nickname, twitter, github."
+    m.user.send "Learn about others. Type !about nickname."
+    m.user.send "Type !playlist to view our ##new2ruby playlist."
+    m.user.send "Type !song and a song name (and artist if you know it) to return a link to share with others."
+    m.user.send "Type !add and a song name (and artist if you know it) to add a song to the playlist."
+    m.user.send "Type !artist and an artist or group name to return a link to their most popular track in US."
   end
 
   on :message, /^!(britney|master|owner)/ do |m|
